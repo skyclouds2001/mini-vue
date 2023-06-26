@@ -21,6 +21,8 @@ class Vue {
     this.#observe(data)
     this.#proxy(data)
 
+    this.#event = new Map()
+
     if (this.#options.el) {
       this.$mount(this.#options.el)
     }
@@ -124,6 +126,84 @@ class Vue {
           self.#data[key] = val
         }
       })
+    })
+  }
+
+  /********** 实例事件相关 **********/
+
+  /**
+   * 事件存储对象
+   * @type {Map<string, Function[]>}
+   * @private
+   */
+  #event
+
+  /**
+   * @see https://v2.cn.vuejs.org/v2/api/index.html#vm-on
+   * @param {string | string[]} event
+   * @param {Function} callback
+   * @public
+   */
+  $on(event, callback) {
+    if (Array.isArray(event)) {
+      event.forEach((ev) => {
+        this.$on(ev, callback)
+      })
+    } else {
+      if (!this.#event.has(event)) {
+        this.#event.set(event, [])
+      }
+      this.#event.get(event).push(callback)
+    }
+  }
+
+  /**
+   * @see https://v2.cn.vuejs.org/v2/api/index.html#vm-once
+   * @param {string} event
+   * @param {Function} callback
+   * @public
+   */
+  $once(event, callback) {
+    const fn = (...args) => {
+      this.$off(event, callback)
+      callback.call(this, ...args)
+    }
+    this.$on(event, fn)
+  }
+
+  /**
+   * @see https://v2.cn.vuejs.org/v2/api/index.html#vm-off
+   * @param {string | string[]} [event]
+   * @param {Function} [callback]
+   * @public
+   */
+  $off(event, callback) {
+    if (!event) {
+      this.#event.clear()
+    } else {
+      if (Array.isArray(event)) {
+        event.forEach((ev) => {
+          this.$off(ev, callback)
+        })
+      } else {
+        if (!callback) {
+          this.#event.delete(event)
+        } else {
+          this.#event.get(event).splice(this.#event.get(event).findIndex((fn) => fn === callback))
+        }
+      }
+    }
+  }
+
+  /**
+   * @see https://v2.cn.vuejs.org/v2/api/index.html#vm-emit
+   * @param {string} event
+   * @param  {any[]} args
+   * @public
+   */
+  $emit(event, ...args) {
+    this.#event.get(event)?.forEach((fn) => {
+      fn.call(this, ...args)
     })
   }
 
