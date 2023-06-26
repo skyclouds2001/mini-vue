@@ -71,6 +71,12 @@ class Vue {
   #events
 
   /**
+   * @type {boolean}
+   * @private
+   */
+  #hasHookEvent
+
+  /**
    * @type {VueOptions}
    * @public
    * @readonly
@@ -112,7 +118,9 @@ class Vue {
     } else {
       if (!this.#events.has(event)) this.#events.set(event, [])
       this.#events.get(event).push(callback)
-      // todo - handle hook event || https://github.com/vuejs/vue/blob/main/src/core/instance/events.ts#L74
+      if (/^hook:/.test(event)) {
+        this.#hasHookEvent = true
+      }
     }
     return this
   }
@@ -182,8 +190,6 @@ class Vue {
     vm.#isVue = true
     vm.#uid = Vue.#uid++
 
-    // todo - https://github.com/vuejs/vue/blob/main/src/core/instance/init.ts
-
     // todo - avoid instances from being observed || https://github.com/vuejs/vue/blob/main/src/core/instance/init.ts#L31
     // todo - effect scope || https://github.com/vuejs/vue/blob/main/src/core/instance/init.ts#L35
     // todo - handle for component instance || https://github.com/vuejs/vue/blob/main/src/core/instance/init.ts#L38
@@ -197,7 +203,7 @@ class Vue {
     // todo - init lifecycle hooks and data || https://github.com/vuejs/vue/blob/main/src/core/instance/init.ts#L59
 
     this.#events = new Map()
-    // todo - HookEvent || https://github.com/vuejs/vue/blob/main/src/core/instance/events.ts#L14
+    this.#hasHookEvent = false
     // todo - init parent attached events || https://github.com/vuejs/vue/blob/main/src/core/instance/events.ts#L15
 
     // todo - init render method || https://github.com/vuejs/vue/blob/main/src/core/instance/init.ts#L61
