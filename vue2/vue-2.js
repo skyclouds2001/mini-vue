@@ -175,7 +175,7 @@ class Vue {
     // todo - handle in dev mode || https://github.com/vuejs/vue/blob/main/src/core/instance/events.ts#L133
     this.#events.get(event)?.forEach((fn) => {
       // todo - invoke with warn handler || https://github.com/vuejs/vue/blob/main/src/core/instance/events.ts#L133
-      fn.apply(this, ...args)
+      fn.apply(this, args)
     })
     return this
   }
