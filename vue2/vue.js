@@ -168,6 +168,7 @@ class Vue {
       this.$off(event, callback)
       callback.call(this, ...args)
     }
+    fn.fn = callback
     this.$on(event, fn)
   }
 
@@ -178,7 +179,7 @@ class Vue {
    * @public
    */
   $off(event, callback) {
-    if (!event) {
+    if (!event && !callback) {
       this.#event.clear()
     } else {
       if (Array.isArray(event)) {
@@ -186,10 +187,12 @@ class Vue {
           this.$off(ev, callback)
         })
       } else {
-        if (!callback) {
-          this.#event.delete(event)
-        } else {
-          this.#event.get(event).splice(this.#event.get(event).findIndex((fn) => fn === callback))
+        if (this.#event.has(event)) {
+          if (!callback) {
+            this.#event.delete(event)
+          } else {
+            this.#event.get(event).splice(this.#event.get(event).findIndex((fn) => fn === callback || fn.fn === callback), 1)
+          }
         }
       }
     }
