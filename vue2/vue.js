@@ -25,13 +25,13 @@ class Vue {
     this.#options = options
 
     this.#data = typeof options.data === 'function' ? options.data.call(this) : (options.data ?? {})
-    this.#observe(this.#data)
-    this.#proxy(this.#data)
+    this.#initData(this.#data)
+    this.#initProxy(this.#data)
     if (this.#options.computed) {
-      this.#computed(this.#options.computed)
+      this.#initComputed(this.#options.computed)
     }
     if (this.#options.methods) {
-      this.#method(this.#options.methods)
+      this.#initMethod(this.#options.methods)
     }
 
     this.#event = new Map()
@@ -102,12 +102,12 @@ class Vue {
    * @param {Record<string, any>} data
    * @private
    */
-  #observe(data) {
+  #initData(data) {
     const self = this
 
     Object.entries(data).forEach(([key, value]) => {
       if (typeof value === 'object') {
-        self.#observe(value)
+        self.#initData(value)
       }
 
       Object.defineProperty(data, key, {
@@ -120,7 +120,7 @@ class Vue {
             return
           }
           if (typeof val === 'object') {
-            self.#observe(val)
+            self.#initData(val)
           }
           value = val
         }
@@ -133,7 +133,7 @@ class Vue {
    * @param {Record<string, any>} data
    * @private
    */
-  #proxy(data) {
+  #initProxy(data) {
     const self = this
 
     Object.entries(data).forEach(([key, _]) => {
@@ -159,7 +159,7 @@ class Vue {
    * @param {Record<string, Function | Record<'get' | 'set', Function>>} computed
    * @private
    */
-  #computed (computed) {
+  #initComputed (computed) {
     const self = this
 
     Object.entries(computed).forEach(([key, value]) => {
@@ -181,7 +181,7 @@ class Vue {
    * @param {Record<string, Function>} methods
    * @private
    */
-  #method (methods) {
+  #initMethod (methods) {
     for (const fn in methods) {
       this[fn] = typeof methods[fn] !== 'function' ? _ => _ : methods[fn].bind(this)
     }
