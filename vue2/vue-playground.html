@@ -5,30 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>vue-playground</title>
   <script src="./vue.js"></script>
+  <script>
+    window.addEventListener('load', () => {
+      window.vue = new Vue({
+        el: '#app',
+        name: 'vue',
+        data: {
+          text: 'text',
+          num: 25,
+          obj: {
+            text: 'text-text',
+            num: 25.25,
+          },
+          $bool: false,
+        },
+        methods: {
+          fn(x) {
+            return this.num + x
+          },
+        },
+      })
+    })
+  </script>
 </head>
 <body>
   <div id="app">
-    {{ text }}
+    <div>{{ text }} {{ num }}</span>
   </div>
-  <script>
-    var vue = new Vue({
-      el: '#app',
-      name: 'vue',
-      data: {
-        text: 'text',
-        num: 25,
-        obj: {
-          text: 'text-text',
-          num: 25.25,
-        },
-        $bool: false,
-      },
-      methods: {
-        fn(x) {
-          return this.num + x
-        },
-      },
-    })
-  </script>
 </body>
 </html>
