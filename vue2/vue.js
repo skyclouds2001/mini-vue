@@ -63,7 +63,7 @@ class Vue {
     return this.#options
   }
 
-  /********** 实例data相关 **********/
+  /********** 实例数据相关 **********/
 
   /**
    * @type {Record<string, any>}
