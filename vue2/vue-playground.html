@@ -19,6 +19,19 @@
           },
           $bool: false,
         },
+        computed: {
+          text_text: function() {
+            return this.text + '-' + this.text
+          },
+          num_num: {
+            get: function() {
+              return this.num + this.num
+            },
+            set: function(num) {
+              this.num = num / 2
+            }
+          },
+        },
         methods: {
           fn(x) {
             return this.num + x

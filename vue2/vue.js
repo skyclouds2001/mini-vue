@@ -9,6 +9,7 @@ class Vue {
    * @typedef {object} VueOptions
    *
    * @property {Record<string, any> | () => Record<string, any>} [data] {@link https://v2.cn.vuejs.org/v2/api/index.html#data}
+   * @property {Record<string, Function | Record<'get' | 'set', Function>>} [computed] {@link https://v2.cn.vuejs.org/v2/api/index.html#computed}
    * @property {Record<string, Method>} [methods] {@link https://v2.cn.vuejs.org/v2/api/index.html#methods}
    *
    * @property {string | Element} [el] {@link https://v2.cn.vuejs.org/v2/api/index.html#el}
@@ -26,6 +27,9 @@ class Vue {
     this.#data = typeof options.data === 'function' ? options.data.call(this) : (options.data ?? {})
     this.#observe(this.#data)
     this.#proxy(this.#data)
+    if (this.#options.computed) {
+      this.#computed(this.#options.computed)
+    }
     if (this.#options.methods) {
       this.#method(this.#options.methods)
     }
@@ -147,6 +151,28 @@ class Vue {
           self.#data[key] = val
         }
       })
+    })
+  }
+
+  /**
+   * 处理计算属性
+   * @param {Record<string, Function | Record<'get' | 'set', Function>>} computed
+   * @private
+   */
+  #computed (computed) {
+    const self = this
+
+    Object.entries(computed).forEach(([key, value]) => {
+      if (typeof value === 'function') {
+        Object.defineProperty(self, key, {
+          get() {
+            return value.call(self)
+          },
+        })
+      }
+      if (typeof value === 'object' && 'get' in value && 'set' in value) {
+        Object.defineProperty(self, key, value)
+      }
     })
   }
 
