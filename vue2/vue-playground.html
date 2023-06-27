@@ -7,6 +7,7 @@
   <script src="./vue.js"></script>
   <script>
     var vue = new Vue({
+      name: 'vue',
       data: {
         text: 'text',
         num: 25,
@@ -15,6 +16,11 @@
           num: 25.25,
         },
         $bool: false,
+      },
+      methods: {
+        fn(x) {
+          return this.num + x
+        },
       },
     })
   </script>

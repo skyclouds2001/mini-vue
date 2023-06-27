@@ -9,6 +9,7 @@ class Vue {
    * @typedef {object} VueOptions
    *
    * @property {Record<string, any> | () => Record<string, any>} [data] {@link https://v2.cn.vuejs.org/v2/api/index.html#data}
+   * @property {Record<string, Method>} [methods] {@link https://v2.cn.vuejs.org/v2/api/index.html#methods}
    *
    * @property {string | Element} [el] {@link https://v2.cn.vuejs.org/v2/api/index.html#el}
    *
@@ -24,6 +25,9 @@ class Vue {
     const data = this.#data = typeof options.data === 'function' ? options.data() : (options.data ?? {})
     this.#observe(data)
     this.#proxy(data)
+    if (this.#options.methods) {
+      this.#method(this.#options.methods)
+    }
 
     this.#event = new Map()
 
@@ -131,6 +135,17 @@ class Vue {
         }
       })
     })
+  }
+
+  /**
+   * 将方法绑定到 Vue 实例上
+   * @param {Record<string, Function>} methods
+   * @private
+   */
+  #method (methods) {
+    for (const fn in methods) {
+      this[fn] = typeof methods[fn] !== 'function' ? _ => _ : methods[fn].bind(this)
+    }
   }
 
   /********** 实例事件相关 **********/
