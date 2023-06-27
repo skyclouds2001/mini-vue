@@ -250,9 +250,13 @@ class Vue {
    * @public
    */
   $mount(el) {
-    // todo - el when undefined
     if (typeof el === 'string') {
       el = document.querySelector(el)
+    }
+
+    // 不能将实例挂载到 body 元素或者 html 元素上
+    if (el === document.body || document.documentElement) {
+      return this
     }
 
     // 1 render
