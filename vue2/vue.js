@@ -12,6 +12,7 @@ class Vue {
    * @property {Record<string, Method>} [methods] {@link https://v2.cn.vuejs.org/v2/api/index.html#methods}
    *
    * @property {string | Element} [el] {@link https://v2.cn.vuejs.org/v2/api/index.html#el}
+   * @property {string} [template] {@link https://v2.cn.vuejs.org/v2/api/index.html#template}
    *
    * @property {string} [name] {@link https://v2.cn.vuejs.org/v2/api/index.html#name}
    */
@@ -253,22 +254,41 @@ class Vue {
     if (typeof el === 'string') {
       el = document.querySelector(el)
     }
+    if (!el) {
+      el = document.createDocumentFragment()
+    }
 
     // 不能将实例挂载到 body 元素或者 html 元素上
-    if (el === document.body || document.documentElement) {
+    if (el === document.body || el === document.documentElement) {
       return this
     }
 
     // 1 render
-
-    // 2 template
-
+    // 2 template issue-with-#
     // 3 use dom structure
+
+    if (this.#options.template) {
+      el.innerHTML = this.#compile(this.#options.template)
+    } else if (el) {
+      el.innerHTML = this.#compile(el.innerHTML)
+    }
 
     if (el) {
       this.$el = el
     }
 
     return this
+  }
+
+  /**
+   * @param {string} template
+   * @returns {string}
+   * @private
+   */
+  #compile(template) {
+    const compiledTemplate = template.trim().replace(/\{\{(.*?)\}\}/g, (_, expression) => {
+      return this.#data[expression.trim()] ?? ''
+    })
+    return compiledTemplate.trim()
   }
 }
