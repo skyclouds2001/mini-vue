@@ -22,7 +22,7 @@ class Vue {
   constructor(options) {
     this.#options = options
 
-    const data = this.#data = typeof options.data === 'function' ? options.data() : (options.data ?? {})
+    const data = this.#data = typeof options.data === 'function' ? options.data.call(this) : (options.data ?? {})
     this.#observe(data)
     this.#proxy(data)
     if (this.#options.methods) {
@@ -35,6 +35,16 @@ class Vue {
       this.$mount(this.#options.el)
     }
   }
+
+  /********** 全局通用相关 **********/
+
+  /**
+   * @see https://v2.cn.vuejs.org/v2/api/index.html#Vue-version
+   * @type {string}
+   * @public
+   * @readonly
+   */
+  static version = '0.0.0'
 
   /********** 实例本身相关 **********/
 
@@ -53,6 +63,7 @@ class Vue {
    * @private
    */
   #options
+
   /**
    * @see https://v2.cn.vuejs.org/v2/api/index.html#vm-options
    * @type {VueOptions}
@@ -70,6 +81,7 @@ class Vue {
    * @private
    */
   #data
+
   /**
    * @see https://v2.cn.vuejs.org/v2/api/index.html#vm-data
    * @type {Record<string, any>}
