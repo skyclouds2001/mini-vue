@@ -254,15 +254,16 @@ class Vue {
     if (typeof el === 'string') {
       el = document.querySelector(el)
     }
-    if (el) {
-      this.$el = el
-    }
 
     // 1 render
 
     // 2 template
 
     // 3 use dom structure
+
+    if (el) {
+      this.$el = el
+    }
 
     return this
   }
