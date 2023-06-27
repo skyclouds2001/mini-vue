@@ -7,6 +7,7 @@
   <script src="./vue.js"></script>
   <script>
     var vue = new Vue({
+      el: '#app',
       name: 'vue',
       data: {
         text: 'text',
@@ -26,6 +27,8 @@
   </script>
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    {{ text }}
+  </div>
 </body>
 </html>
