@@ -7,8 +7,12 @@
 class Vue {
   /**
    * @typedef {object} VueOptions
-   * @property {string | Element} [el] {@link https://v2.cn.vuejs.org/v2/api/index.html#el}
+   *
    * @property {Record<string, any> | () => Record<string, any>} [data] {@link https://v2.cn.vuejs.org/v2/api/index.html#data}
+   *
+   * @property {string | Element} [el] {@link https://v2.cn.vuejs.org/v2/api/index.html#el}
+   *
+   * @property {string} [name] {@link https://v2.cn.vuejs.org/v2/api/index.html#name}
    */
 
   /**
