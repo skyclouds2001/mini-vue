@@ -23,9 +23,9 @@ class Vue {
   constructor(options) {
     this.#options = options
 
-    const data = this.#data = typeof options.data === 'function' ? options.data.call(this) : (options.data ?? {})
-    this.#observe(data)
-    this.#proxy(data)
+    this.#data = typeof options.data === 'function' ? options.data.call(this) : (options.data ?? {})
+    this.#observe(this.#data)
+    this.#proxy(this.#data)
     if (this.#options.methods) {
       this.#method(this.#options.methods)
     }
