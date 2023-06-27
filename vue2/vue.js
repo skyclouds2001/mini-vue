@@ -250,13 +250,13 @@ class Vue {
    * @public
    */
   $mount(el) {
-    if (!el) {
-      el = document.createDocumentFragment()
-    }
+    // todo - el when undefined
     if (typeof el === 'string') {
       el = document.querySelector(el)
     }
-    this.$el = el
+    if (el) {
+      this.$el = el
+    }
 
     // 1 render
 
@@ -265,37 +265,5 @@ class Vue {
     // 3 use dom structure
 
     return this
-  }
-
-  /**
-   * @param {Element} el
-   * @private
-   */
-  #compile() {
-    const fg = document.createDocumentFragment()
-    for(let child = this.$el.firstChild; child; child = this.$el.firstChild) {
-      fg.appendChild(child)
-    }
-
-    /**
-     * 替换 {{  }} 表达式的值
-     * @param {Node} fg 
-     */
-    const replace = (fg) => {
-      Array.from(fg.childNodes).forEach((node) => {
-        if (node.nodeType === Node.TEXT_NODE && /{{(.*)}}/.test(node.textContent)) {
-          // const arr = RegExp.$1.split('.')
-          // let val = this
-          // arr.forEach(k => (val = val[k]))
-          // node.textContent = text.replace(reg, val)
-        }
-
-        if (node.childNodes) {
-          replace(node)
-        }
-      })
-    }
-
-    this.$el.appendChild(fg)
   }
 }
