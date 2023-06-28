@@ -37,6 +37,11 @@
             return this.num + x
           },
         },
+        watch: {
+          text: function(newVal, oldVal) {
+            console.log(newVal, oldVal)
+          },
+        },
       })
     })
   </script>

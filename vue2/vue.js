@@ -11,6 +11,7 @@ class Vue {
    * @property {Record<string, any> | () => Record<string, any>} [data] {@link https://v2.cn.vuejs.org/v2/api/index.html#data}
    * @property {Record<string, Function | Record<'get' | 'set', Function>>} [computed] {@link https://v2.cn.vuejs.org/v2/api/index.html#computed}
    * @property {Record<string, Method>} [methods] {@link https://v2.cn.vuejs.org/v2/api/index.html#methods}
+   * @property {Record<string, string | Function | Object | Array>} [watch] {@link https://v2.cn.vuejs.org/v2/api/index.html#watch}
    *
    * @property {string | Element} [el] {@link https://v2.cn.vuejs.org/v2/api/index.html#el}
    * @property {string} [template] {@link https://v2.cn.vuejs.org/v2/api/index.html#template}
@@ -32,6 +33,9 @@ class Vue {
     }
     if (this.#options.methods) {
       this.#initMethod(this.#options.methods)
+    }
+    if (this.#options.watch) {
+      this.#initWatch(this.#options.watch)
     }
 
     this.#event = new Map()
@@ -185,6 +189,41 @@ class Vue {
     for (const fn in methods) {
       this[fn] = typeof methods[fn] !== 'function' ? _ => _ : methods[fn].bind(this)
     }
+  }
+
+  /**
+   * 处理监听属性
+   * @param {Record<string, string | Function | Object | Array>} watch
+   * @private
+   */
+  #initWatch (watch) {
+    const self = this
+
+    Object.entries(watch).forEach(([key, callback]) => {
+      let value = this.#data[key]
+      Object.defineProperty(self.#data, key, {
+        get() {
+          return value
+        },
+        set(val) {
+          const v = value
+          value = val
+          callback.call(self, val, v)
+        },
+      })
+    })
+  }
+
+  /**
+   * @see https://v2.cn.vuejs.org/v2/api/index.html#vm-watch
+   * @param {string | Function} expOrFn
+   * @param {Function | Object} callback
+   * @param {Record<'deep' | 'immediate', boolean>} options
+   * @returns {Function}
+   * @public
+   */
+  $watch(expOrFn, callback, options) {
+    //
   }
 
   /********** 实例事件相关 **********/
