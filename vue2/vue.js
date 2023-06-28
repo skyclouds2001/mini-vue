@@ -159,6 +159,19 @@ class Vue {
   }
 
   /**
+   * 将方法绑定到 Vue 实例上
+   * @param {Record<string, Function>} methods
+   * @private
+   */
+  #initMethod (methods) {
+    for (const fn in methods) {
+      this[fn] = typeof methods[fn] !== 'function' ? _ => _ : methods[fn].bind(this)
+    }
+  }
+
+  /********** 实例计算监听属性相关 **********/
+
+  /**
    * 处理计算属性
    * @param {Record<string, Function | Record<'get' | 'set', Function>>} computed
    * @private
@@ -178,17 +191,6 @@ class Vue {
         Object.defineProperty(self, key, value)
       }
     })
-  }
-
-  /**
-   * 将方法绑定到 Vue 实例上
-   * @param {Record<string, Function>} methods
-   * @private
-   */
-  #initMethod (methods) {
-    for (const fn in methods) {
-      this[fn] = typeof methods[fn] !== 'function' ? _ => _ : methods[fn].bind(this)
-    }
   }
 
   /**
