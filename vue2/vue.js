@@ -11,7 +11,7 @@ class Vue {
    * @property {Record<string, any> | () => Record<string, any>} [data] {@link https://v2.cn.vuejs.org/v2/api/index.html#data}
    * @property {Record<string, Function | Record<'get' | 'set', Function>>} [computed] {@link https://v2.cn.vuejs.org/v2/api/index.html#computed}
    * @property {Record<string, Method>} [methods] {@link https://v2.cn.vuejs.org/v2/api/index.html#methods}
-   * @property {Record<string, string | Function | Object | Array>} [watch] {@link https://v2.cn.vuejs.org/v2/api/index.html#watch}
+   * @property {Record<string, string | Function | Record<string, any> | Array>} [watch] {@link https://v2.cn.vuejs.org/v2/api/index.html#watch}
    *
    * @property {string | Element} [el] {@link https://v2.cn.vuejs.org/v2/api/index.html#el}
    * @property {string} [template] {@link https://v2.cn.vuejs.org/v2/api/index.html#template}
@@ -193,7 +193,7 @@ class Vue {
 
   /**
    * 处理监听属性
-   * @param {Record<string, string | Function | Object | Array>} watch
+   * @param {Record<string, string | Function | Record<string, any> | Array>} watch
    * @private
    */
   #initWatch (watch) {
@@ -217,8 +217,8 @@ class Vue {
   /**
    * @see https://v2.cn.vuejs.org/v2/api/index.html#vm-watch
    * @param {string | Function} expOrFn
-   * @param {Function | Object} callback
-   * @param {Record<'deep' | 'immediate', boolean>} options
+   * @param {Function | Record<string, any>} callback
+   * @param {Record<'deep' | 'immediate', boolean>} [options]
    * @returns {Function}
    * @public
    */
