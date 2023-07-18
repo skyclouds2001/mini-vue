@@ -57,4 +57,4 @@
 
 ### infrastructure
 
-- [ ] support monorepo with pnpm
+- [x] support monorepo with pnpm
